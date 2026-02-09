@@ -1,0 +1,229 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  color: #2d3436;
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  min-height: 100vh;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+#root {
+  width: 100%;
+  max-width: 600px;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem 1rem;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  color: #6c5ce7;
+}
+
+.score {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fdcb6e;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 999px;
+  padding: 0.3rem 1rem;
+}
+
+/* Card */
+.card {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  text-align: center;
+}
+
+.card.finished {
+  padding: 3rem 2rem;
+}
+
+.instruction {
+  font-size: 1.1rem;
+  color: #636e72;
+  margin-bottom: 0.5rem;
+}
+
+.sight-word {
+  font-size: 4rem;
+  font-weight: 800;
+  color: #6c5ce7;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.15s;
+  padding: 0.25rem 0;
+}
+
+.sight-word:hover {
+  transform: scale(1.05);
+}
+
+.sight-word:active {
+  transform: scale(0.97);
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: #b2bec3;
+  margin-bottom: 1.5rem;
+}
+
+/* Picture grid */
+.pictures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.picture-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1rem;
+  border: 3px solid #dfe6e9;
+  border-radius: 1rem;
+  background: #fafafa;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.2s, opacity 0.3s;
+  font-family: inherit;
+}
+
+.picture-btn:hover {
+  border-color: #6c5ce7;
+  transform: scale(1.04);
+}
+
+.picture-btn:active {
+  transform: scale(0.97);
+}
+
+.picture-btn .emoji {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+
+.picture-btn .picture-label {
+  font-size: 0.95rem;
+  color: #636e72;
+  font-weight: 600;
+}
+
+.picture-btn.correct {
+  border-color: #00b894;
+  background: #e0fcef;
+}
+
+.picture-btn.dim {
+  opacity: 0.4;
+}
+
+/* Feedback */
+.feedback {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.feedback.correct {
+  background: #e0fcef;
+  color: #00b894;
+}
+
+.feedback.wrong {
+  background: #fff3e0;
+  color: #e17055;
+}
+
+.btn-next {
+  margin-top: 0.75rem;
+  padding: 0.6rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  background: #6c5ce7;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+
+.btn-next:hover {
+  background: #5a4bd1;
+  transform: scale(1.04);
+}
+
+/* End screen */
+.score-final {
+  font-size: 1.5rem;
+  margin: 1rem 0;
+  color: #636e72;
+}
+
+.btn-restart {
+  padding: 0.8rem 2.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  background: #6c5ce7;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+
+.btn-restart:hover {
+  background: #5a4bd1;
+  transform: scale(1.04);
+}
+
+/* Progress */
+.progress {
+  font-size: 0.95rem;
+  color: #636e72;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  padding: 0.3rem 1rem;
+}
+
+/* Finished card heading */
+.finished h1 {
+  font-size: 2.5rem;
+  color: #6c5ce7;
+}
