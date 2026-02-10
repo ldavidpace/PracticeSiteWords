@@ -1,6 +1,6 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import sightWords, { type SightWordEntry } from './sightWords'
-import { speak } from './speak'
+import { speak, cancelSpeech, playWompWomp, playSuccess } from './speak'
 
 function shuffle<T>(array: T[]): T[] {
   const a = [...array]
@@ -11,44 +11,57 @@ function shuffle<T>(array: T[]): T[] {
   return a
 }
 
+/** Shuffle the word order and randomize option positions within each word. */
+function buildQueue(): SightWordEntry[] {
+  return shuffle(sightWords).map((entry) => {
+    const indices = shuffle(entry.options.map((_, i) => i))
+    return {
+      word: entry.word,
+      options: indices.map((i) => entry.options[i]),
+      correctIndex: indices.indexOf(entry.correctIndex),
+    }
+  })
+}
+
 type Feedback = 'correct' | 'wrong' | null
 
 export default function App() {
-  const [queue, setQueue] = useState<SightWordEntry[]>(() => shuffle(sightWords))
+  const [queue, setQueue] = useState<SightWordEntry[]>(buildQueue)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [feedback, setFeedback] = useState<Feedback>(null)
   const [score, setScore] = useState(0)
   const [total, setTotal] = useState(0)
+  const [selected, setSelected] = useState<number | null>(null)
   const [finished, setFinished] = useState(false)
 
   const current = queue[currentIndex]
 
-  // Speak the sight word when it first appears
-  useEffect(() => {
-    if (!finished && current) {
-      speak(current.word)
-    }
-  }, [currentIndex, finished, current])
-
   const handlePictureClick = useCallback(
     (index: number) => {
       if (feedback) return // ignore clicks during feedback
-      const option = current.options[index]
-      // Always speak the label of the clicked picture
-      speak(option.label)
-
-      const isCorrect = index === current.correctIndex
-      setFeedback(isCorrect ? 'correct' : 'wrong')
-      setTotal((t) => t + 1)
-      if (isCorrect) {
-        setScore((s) => s + 1)
-      }
+      speak(current.options[index].label)
+      setSelected(index)
     },
     [current, feedback],
   )
 
+  const handleSubmit = useCallback(() => {
+    if (selected === null || feedback) return
+    cancelSpeech()
+    const isCorrect = selected === current.correctIndex
+    setFeedback(isCorrect ? 'correct' : 'wrong')
+    setTotal((t) => t + 1)
+    if (isCorrect) {
+      setScore((s) => s + 1)
+      playSuccess()
+    } else {
+      playWompWomp()
+    }
+  }, [selected, current, feedback])
+
   const advance = useCallback(() => {
     setFeedback(null)
+    setSelected(null)
     if (currentIndex + 1 >= queue.length) {
       setFinished(true)
     } else {
@@ -57,9 +70,10 @@ export default function App() {
   }, [currentIndex, queue.length])
 
   const restart = useCallback(() => {
-    setQueue(shuffle(sightWords))
+    setQueue(buildQueue())
     setCurrentIndex(0)
     setFeedback(null)
+    setSelected(null)
     setScore(0)
     setTotal(0)
     setFinished(false)
@@ -92,25 +106,34 @@ export default function App() {
 
       <div className="card">
         <p className="instruction">Tap the picture that matches:</p>
-        <h2 className="sight-word" onClick={() => speak(current.word)}>
+        <h2 className="sight-word">
           {current.word}
         </h2>
-        <p className="hint">tap the word to hear it again</p>
 
         <div className="pictures">
           {current.options.map((option, i) => (
             <button
               key={i}
               className={`picture-btn ${
-                feedback && i === current.correctIndex ? 'correct' : ''
+                !feedback && i === selected ? 'selected' : ''
+              } ${feedback && i === current.correctIndex ? 'correct' : ''
               } ${feedback === 'wrong' && i !== current.correctIndex ? 'dim' : ''}`}
               onClick={() => handlePictureClick(i)}
             >
               <span className="emoji">{option.emoji}</span>
-              <span className="picture-label">{option.label}</span>
             </button>
           ))}
         </div>
+
+        {!feedback && (
+          <button
+            className="btn-submit"
+            disabled={selected === null}
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
+        )}
 
         {feedback && (
           <div className={`feedback ${feedback}`}>

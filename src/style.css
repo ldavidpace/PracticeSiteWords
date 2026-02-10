@@ -79,23 +79,8 @@ body {
   font-size: 4rem;
   font-weight: 800;
   color: #6c5ce7;
-  cursor: pointer;
   user-select: none;
-  transition: transform 0.15s;
   padding: 0.25rem 0;
-}
-
-.sight-word:hover {
-  transform: scale(1.05);
-}
-
-.sight-word:active {
-  transform: scale(0.97);
-}
-
-.hint {
-  font-size: 0.85rem;
-  color: #b2bec3;
   margin-bottom: 1.5rem;
 }
 
@@ -135,10 +120,9 @@ body {
   line-height: 1;
 }
 
-.picture-btn .picture-label {
-  font-size: 0.95rem;
-  color: #636e72;
-  font-weight: 600;
+.picture-btn.selected {
+  border-color: #6c5ce7;
+  background: #ede9fe;
 }
 
 .picture-btn.correct {
@@ -148,6 +132,31 @@ body {
 
 .picture-btn.dim {
   opacity: 0.4;
+}
+
+/* Submit */
+.btn-submit {
+  margin-top: 1rem;
+  padding: 0.7rem 2.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  background: #6c5ce7;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, opacity 0.2s;
+  font-family: inherit;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: #5a4bd1;
+  transform: scale(1.04);
+}
+
+.btn-submit:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 /* Feedback */
