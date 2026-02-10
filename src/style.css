@@ -55,6 +55,57 @@ body {
   padding: 0.3rem 1rem;
 }
 
+/* Timer */
+.timer-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+}
+
+.timer-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #636e72;
+}
+
+.timer-btn {
+  padding: 0.3rem 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 2px solid #6c5ce7;
+  border-radius: 999px;
+  background: white;
+  color: #6c5ce7;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-family: inherit;
+}
+
+.timer-btn:hover {
+  background: #6c5ce7;
+  color: white;
+}
+
+.timer-display {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #6c5ce7;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-warning {
+  color: #e17055;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 /* Card */
 .card {
   background: white;

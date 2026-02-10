@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import sightWords, { type SightWordEntry } from './sightWords'
 import { speak, cancelSpeech, playWompWomp, playSuccess } from './speak'
 
@@ -25,6 +25,8 @@ function buildQueue(): SightWordEntry[] {
 
 type Feedback = 'correct' | 'wrong' | null
 
+const TIMER_OPTIONS = [5, 10, 20] // minutes
+
 export default function App() {
   const [queue, setQueue] = useState<SightWordEntry[]>(buildQueue)
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -33,6 +35,51 @@ export default function App() {
   const [total, setTotal] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [finished, setFinished] = useState(false)
+
+  // Timer state: null = no timer, number = seconds remaining
+  const [timeLeft, setTimeLeft] = useState<number | null>(null)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const startTimer = useCallback((minutes: number) => {
+    if (timerRef.current) clearInterval(timerRef.current)
+    setTimeLeft(minutes * 60)
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev === null || prev <= 1) {
+          clearInterval(timerRef.current!)
+          timerRef.current = null
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+  }, [])
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current)
+    timerRef.current = null
+    setTimeLeft(null)
+  }, [])
+
+  // When timer hits 0, finish the game
+  useEffect(() => {
+    if (timeLeft === 0) {
+      setFinished(true)
+    }
+  }, [timeLeft])
+
+  // Clean up interval on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [])
+
+  const formatTime = (seconds: number): string => {
+    const m = Math.floor(seconds / 60)
+    const s = seconds % 60
+    return `${m}:${s.toString().padStart(2, '0')}`
+  }
 
   const current = queue[currentIndex]
 
@@ -77,7 +124,8 @@ export default function App() {
     setScore(0)
     setTotal(0)
     setFinished(false)
-  }, [])
+    clearTimer()
+  }, [clearTimer])
 
   if (finished) {
     return (
@@ -103,6 +151,28 @@ export default function App() {
           ⭐ {score} / {total}
         </div>
       </header>
+
+      <div className="timer-bar">
+        {timeLeft === null ? (
+          <>
+            <span className="timer-label">Timer:</span>
+            {TIMER_OPTIONS.map((m) => (
+              <button key={m} className="timer-btn" onClick={() => startTimer(m)}>
+                {m} min
+              </button>
+            ))}
+          </>
+        ) : (
+          <>
+            <span className={`timer-display ${timeLeft <= 30 ? 'timer-warning' : ''}`}>
+              {formatTime(timeLeft)}
+            </span>
+            <button className="timer-btn" onClick={clearTimer}>
+              Cancel
+            </button>
+          </>
+        )}
+      </div>
 
       <div className="card">
         <p className="instruction">Tap the picture that matches:</p>
