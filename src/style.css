@@ -475,3 +475,26 @@ body {
   opacity: 0;
   pointer-events: none;
 }
+
+/* ===== Word Catch ===== */
+.wc-hud {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wc-lives {
+  font-size: 1.2rem;
+  letter-spacing: 0.1rem;
+}
+
+.wc-player {
+  position: absolute;
+  bottom: 8px;
+  transform: translateX(-50%);
+  font-size: 2.5rem;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+  transition: left 0.05s linear;
+}
