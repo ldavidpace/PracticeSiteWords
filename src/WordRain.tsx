@@ -16,7 +16,9 @@ type Phase = 'setup' | 'playing' | 'ended'
 
 const DURATION_OPTIONS = [30, 60, 90] // seconds
 const PLAY_AREA_HEIGHT = 500
-const WORD_SPAWN_INTERVAL = 1200 // ms between spawns
+const WORD_SPAWN_INTERVAL = 1200 // starting ms between spawns
+const MIN_SPAWN_INTERVAL = 400 // fastest spawn rate
+const SPAWN_DECREASE = 50 // ms faster per 10 seconds elapsed
 const BASE_SPEED = 80 // pixels per second
 const SPEED_INCREASE = 20 // additional px/s per 10 seconds elapsed
 const TARGET_CHANCE = 0.35
@@ -84,8 +86,9 @@ export default function WordRain({ onBack }: WordRainProps) {
 
       const currentSpeed = BASE_SPEED + SPEED_INCREASE * (elapsedRef.current / 10) + catchBoostRef.current
 
-      // Spawn new words
-      if (timestamp - lastSpawnRef.current > WORD_SPAWN_INTERVAL) {
+      // Spawn new words (interval shrinks over time)
+      const spawnInterval = Math.max(MIN_SPAWN_INTERVAL, WORD_SPAWN_INTERVAL - SPAWN_DECREASE * (elapsedRef.current / 10))
+      if (timestamp - lastSpawnRef.current > spawnInterval) {
         lastSpawnRef.current = timestamp
         setFallingWords((prev) => {
           const isTarget = Math.random() < TARGET_CHANCE
@@ -289,7 +292,7 @@ export default function WordRain({ onBack }: WordRainProps) {
               left: `${fw.x}%`,
               top: fw.y,
             }}
-            onClick={() => handleWordTap(fw)}
+            onPointerDown={() => handleWordTap(fw)}
           >
             {fw.word}
           </button>
